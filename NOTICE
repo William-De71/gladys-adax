@@ -1,0 +1,21 @@
+Gladys Adax integration
+Copyright 2026 William Deren
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+It calls the official Adax remote user client API
+(https://adax.no/en/wi-fi/api-development/, OpenAPI document at
+https://api-1.adax.no/client-api/openapi) with the account id and a credential
+the user creates in the Adax WiFi app. Adax is a trademark of Adax AS (Glen
+Dimplex Nordic); this integration is not affiliated with nor endorsed by Adax.
+
+Protocol knowledge
+------------------
+The endpoints, the password grant, the hundredths of a degree and the
+`?withEnergy=1` fields come from the official Adax documentation and its
+OpenAPI document. The pace of one request every 30 seconds comes from pyAdax
+by Daniel Hjelseth Høyer (https://github.com/Danielhiversen/pyAdax, MIT
+License), the library of the Home Assistant "adax" component; the shape of
+the energy values (a saw tooth that restarts at every hour) from the Home
+Assistant issue home-assistant/core#150994. No code was copied from them:
+this integration is an independent JavaScript implementation of the same API.

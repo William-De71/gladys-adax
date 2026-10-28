@@ -1,0 +1,317 @@
+{
+  "devices": {
+    "room": {
+      "external_id": "ext:test-integration:room:735362",
+      "should_poll": false,
+      "params": ["ADAX_HOME", "ADAX_HEATERS"],
+      "features": [
+        {
+          "external_id": "ext:test-integration:room:735362:target_temperature",
+          "category": "thermostat",
+          "type": "target-temperature",
+          "unit": "celsius",
+          "min": 5,
+          "max": 35,
+          "step": 1,
+          "read_only": false,
+          "has_feedback": true,
+          "supported_options": []
+        },
+        {
+          "external_id": "ext:test-integration:room:735362:mode",
+          "category": "thermostat",
+          "type": "mode",
+          "min": 0,
+          "max": 1,
+          "read_only": false,
+          "has_feedback": true,
+          "supported_options": [0, 1]
+        },
+        {
+          "external_id": "ext:test-integration:room:735362:temperature",
+          "category": "temperature-sensor",
+          "type": "decimal",
+          "unit": "celsius",
+          "min": -20,
+          "max": 60,
+          "read_only": true,
+          "has_feedback": false,
+          "supported_options": []
+        },
+        {
+          "external_id": "ext:test-integration:room:735362:operating_state",
+          "category": "thermostat",
+          "type": "operating-state",
+          "min": 0,
+          "max": 2,
+          "read_only": true,
+          "has_feedback": false,
+          "supported_options": []
+        },
+        {
+          "external_id": "ext:test-integration:room:735362:power",
+          "category": "energy-sensor",
+          "type": "power",
+          "unit": "watt",
+          "min": 0,
+          "max": 10000,
+          "read_only": true,
+          "has_feedback": false,
+          "supported_options": []
+        },
+        {
+          "external_id": "ext:test-integration:room:735362:energy",
+          "category": "energy-sensor",
+          "type": "index",
+          "unit": "kilowatt-hour",
+          "min": 0,
+          "max": 10000000,
+          "read_only": true,
+          "has_feedback": false,
+          "supported_options": []
+        }
+      ]
+    },
+    "room_without_energy": {
+      "external_id": "ext:test-integration:room:735362",
+      "should_poll": false,
+      "params": ["ADAX_HOME", "ADAX_HEATERS"],
+      "features": [
+        {
+          "external_id": "ext:test-integration:room:735362:target_temperature",
+          "category": "thermostat",
+          "type": "target-temperature",
+          "unit": "celsius",
+          "min": 5,
+          "max": 35,
+          "step": 1,
+          "read_only": false,
+          "has_feedback": true,
+          "supported_options": []
+        },
+        {
+          "external_id": "ext:test-integration:room:735362:mode",
+          "category": "thermostat",
+          "type": "mode",
+          "min": 0,
+          "max": 1,
+          "read_only": false,
+          "has_feedback": true,
+          "supported_options": [0, 1]
+        },
+        {
+          "external_id": "ext:test-integration:room:735362:temperature",
+          "category": "temperature-sensor",
+          "type": "decimal",
+          "unit": "celsius",
+          "min": -20,
+          "max": 60,
+          "read_only": true,
+          "has_feedback": false,
+          "supported_options": []
+        }
+      ]
+    }
+  },
+  "manifest": {
+    "config_schema": [
+      {
+        "key": "intro",
+        "type": "section"
+      },
+      {
+        "key": "account_id",
+        "type": "string"
+      },
+      {
+        "key": "credential",
+        "type": "secret"
+      },
+      {
+        "key": "refresh_minutes",
+        "type": "select"
+      },
+      {
+        "key": "language",
+        "type": "select"
+      }
+    ],
+    "config_options": {
+      "refresh_minutes": ["1", "2", "5", "10"],
+      "language": ["auto", "en", "fr", "de", "es"]
+    },
+    "actions": ["test_connection"],
+    "widgets": [
+      {
+        "key": "rooms",
+        "settings": ["devices"]
+      },
+      {
+        "key": "energy",
+        "settings": ["devices"]
+      },
+      {
+        "key": "status",
+        "settings": []
+      }
+    ],
+    "widget_actions": ["all_on", "all_off", "refresh"],
+    "scene_triggers": [
+      {
+        "key": "heating_turned_on",
+        "fields": [
+          {
+            "key": "device",
+            "options": []
+          }
+        ],
+        "variables": [
+          {
+            "key": "device",
+            "type": "string"
+          },
+          {
+            "key": "device_name",
+            "type": "string"
+          },
+          {
+            "key": "temperature",
+            "type": "number"
+          },
+          {
+            "key": "target_temperature",
+            "type": "number"
+          }
+        ]
+      },
+      {
+        "key": "heating_turned_off",
+        "fields": [
+          {
+            "key": "device",
+            "options": []
+          }
+        ],
+        "variables": [
+          {
+            "key": "device",
+            "type": "string"
+          },
+          {
+            "key": "device_name",
+            "type": "string"
+          },
+          {
+            "key": "temperature",
+            "type": "number"
+          },
+          {
+            "key": "target_temperature",
+            "type": "number"
+          }
+        ]
+      },
+      {
+        "key": "setpoint_changed",
+        "fields": [
+          {
+            "key": "device",
+            "options": []
+          }
+        ],
+        "variables": [
+          {
+            "key": "device",
+            "type": "string"
+          },
+          {
+            "key": "device_name",
+            "type": "string"
+          },
+          {
+            "key": "temperature",
+            "type": "number"
+          },
+          {
+            "key": "target_temperature",
+            "type": "number"
+          },
+          {
+            "key": "previous_target",
+            "type": "number"
+          }
+        ]
+      }
+    ],
+    "scene_actions": [
+      {
+        "key": "set_temperature",
+        "fields": [
+          {
+            "key": "device",
+            "options": []
+          },
+          {
+            "key": "temperature",
+            "options": []
+          }
+        ],
+        "outputs": [
+          {
+            "key": "count",
+            "type": "number"
+          },
+          {
+            "key": "failed",
+            "type": "number"
+          },
+          {
+            "key": "temperature",
+            "type": "number"
+          }
+        ]
+      },
+      {
+        "key": "set_heating",
+        "fields": [
+          {
+            "key": "device",
+            "options": []
+          },
+          {
+            "key": "state",
+            "options": ["on", "off"]
+          }
+        ],
+        "outputs": [
+          {
+            "key": "count",
+            "type": "number"
+          },
+          {
+            "key": "failed",
+            "type": "number"
+          }
+        ]
+      },
+      {
+        "key": "refresh",
+        "fields": [],
+        "outputs": [
+          {
+            "key": "rooms",
+            "type": "number"
+          },
+          {
+            "key": "heating",
+            "type": "number"
+          },
+          {
+            "key": "energy_today",
+            "type": "number"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,809 @@
+{
+  "manifest_version": 1,
+  "type": "device",
+  "name": "Adax",
+  "description": {
+    "en": "Adax WiFi heaters by room: setpoint, on/off, temperature, power, energy, scenes.",
+    "fr": "Radiateurs Adax WiFi par pièce : consigne, marche/arrêt, température, puissance, énergie.",
+    "de": "Adax-WiFi-Heizgeräte je Raum: Sollwert, Ein/Aus, Temperatur, Leistung, Energie, Szenen.",
+    "es": "Radiadores Adax WiFi por estancia: consigna, encendido, temperatura, potencia, energía."
+  },
+  "version": "0.1.0",
+  "docker_image": "ghcr.io/william-de71/gladys-adax:0.1.0",
+  "gladys_version": ">=5.3.0",
+  "categories": ["climate", "energy"],
+  "keywords": [
+    "adax",
+    "adax wifi",
+    "neo",
+    "panel heater",
+    "radiateur",
+    "radiateur électrique",
+    "heizkörper",
+    "radiador",
+    "glen dimplex",
+    "panelovn"
+  ],
+  "cover_image": "https://raw.githubusercontent.com/William-De71/gladys-adax/main/cover.jpg",
+  "transports": ["cloud"],
+  "config_schema": [
+    {
+      "key": "intro",
+      "type": "section",
+      "label": {
+        "en": "Adax",
+        "fr": "Adax",
+        "de": "Adax",
+        "es": "Adax"
+      },
+      "description": {
+        "en": "How to connect:\n1. Set up your heaters in the Adax WiFi app (version 3.7 or later) and put each one in a room.\n2. In the app, open the Account tab, then “Remote user client API”.\n3. Copy the account id shown there below, then tap “Add credential”, give it a name and copy the generated password below.\n4. In the Discover tab, add your rooms.\nThe integration reads the Adax cloud: a change reaches the heaters within 30 seconds, and a change made on them reaches Gladys at the next reading.",
+        "fr": "Pour se connecter :\n1. Installez vos radiateurs dans l’application Adax WiFi (version 3.7 ou plus) et rangez chacun dans une pièce.\n2. Dans l’application, ouvrez l’onglet Compte, puis « Remote user client API ».\n3. Copiez ci-dessous l’identifiant de compte affiché, puis touchez « Add credential », donnez-lui un nom et copiez ci-dessous le mot de passe généré.\n4. Dans l’onglet Découverte, ajoutez vos pièces.\nL’intégration passe par le cloud Adax : un changement atteint les radiateurs en 30 secondes au plus, et un changement fait sur eux atteint Gladys au relevé suivant.",
+        "de": "So verbinden Sie sich:\n1. Richten Sie Ihre Heizgeräte in der Adax-WiFi-App (Version 3.7 oder neuer) ein und ordnen Sie jedes einem Raum zu.\n2. Öffnen Sie in der App den Reiter Konto, dann „Remote user client API“.\n3. Kopieren Sie die dort angezeigte Konto-ID unten hinein, tippen Sie dann auf „Add credential“, vergeben Sie einen Namen und kopieren Sie das erzeugte Passwort unten hinein.\n4. Fügen Sie im Reiter Entdecken Ihre Räume hinzu.\nDie Integration nutzt die Adax-Cloud: Eine Änderung erreicht die Heizgeräte innerhalb von 30 Sekunden, und eine Änderung an ihnen erreicht Gladys bei der nächsten Abfrage.",
+        "es": "Cómo conectarse:\n1. Configure sus radiadores en la app Adax WiFi (versión 3.7 o posterior) y asigne cada uno a una estancia.\n2. En la app, abra la pestaña Cuenta y luego «Remote user client API».\n3. Copie abajo el id de cuenta que aparece, toque «Add credential», dele un nombre y copie abajo la contraseña generada.\n4. En la pestaña Descubrir, añada sus estancias.\nLa integración pasa por la nube de Adax: un cambio llega a los radiadores en 30 segundos como máximo, y un cambio hecho en ellos llega a Gladys en la siguiente lectura."
+      },
+      "links": [
+        {
+          "url": "https://adax.no/en/wi-fi/api-development/",
+          "label": {
+            "en": "Adax API (official page)",
+            "fr": "API Adax (page officielle)",
+            "de": "Adax-API (offizielle Seite)",
+            "es": "API Adax (página oficial)"
+          }
+        },
+        {
+          "url": "https://github.com/William-De71/gladys-adax/blob/main/docs/fr.md",
+          "label": {
+            "en": "Documentation (French)",
+            "fr": "Documentation",
+            "de": "Dokumentation (Französisch)",
+            "es": "Documentación (francés)"
+          }
+        },
+        {
+          "url": "https://github.com/William-De71/gladys-adax/blob/main/docs/en.md",
+          "label": {
+            "en": "Documentation",
+            "fr": "Documentation (anglais)",
+            "de": "Dokumentation (Englisch)",
+            "es": "Documentación (inglés)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "account_id",
+      "type": "string",
+      "required": true,
+      "label": {
+        "en": "Account id",
+        "fr": "Identifiant de compte",
+        "de": "Konto-ID",
+        "es": "Id de cuenta"
+      },
+      "description": {
+        "en": "The number shown in the Adax WiFi app, Account tab → Remote user client API.",
+        "fr": "Le numéro affiché dans l’application Adax WiFi, onglet Compte → Remote user client API.",
+        "de": "Die Nummer in der Adax-WiFi-App, Reiter Konto → Remote user client API.",
+        "es": "El número que muestra la app Adax WiFi, pestaña Cuenta → Remote user client API."
+      },
+      "placeholder": {
+        "en": "123456",
+        "fr": "123456",
+        "de": "123456",
+        "es": "123456"
+      }
+    },
+    {
+      "key": "credential",
+      "type": "secret",
+      "required": true,
+      "label": {
+        "en": "Credential password",
+        "fr": "Mot de passe de l’accès",
+        "de": "Passwort des Zugangs",
+        "es": "Contraseña de la credencial"
+      },
+      "description": {
+        "en": "The password generated by “Add credential” in the same screen. Sent to Adax only, never shown again.",
+        "fr": "Le mot de passe généré par « Add credential » dans le même écran. Envoyé à Adax uniquement, jamais réaffiché.",
+        "de": "Das von „Add credential“ auf demselben Bildschirm erzeugte Passwort. Wird nur an Adax gesendet und nie wieder angezeigt.",
+        "es": "La contraseña generada por «Add credential» en la misma pantalla. Solo se envía a Adax y nunca se vuelve a mostrar."
+      },
+      "placeholder": {
+        "en": "Password",
+        "fr": "Mot de passe",
+        "de": "Passwort",
+        "es": "Contraseña"
+      }
+    },
+    {
+      "key": "refresh_minutes",
+      "type": "select",
+      "label": {
+        "en": "Reading interval",
+        "fr": "Intervalle de relevé",
+        "de": "Abfrageintervall",
+        "es": "Intervalo de lectura"
+      },
+      "options": [
+        {
+          "value": "1",
+          "label": {
+            "en": "Every 1 min",
+            "fr": "Toutes les 1 min",
+            "de": "Alle 1 Min.",
+            "es": "Cada 1 min"
+          }
+        },
+        {
+          "value": "2",
+          "label": {
+            "en": "Every 2 min",
+            "fr": "Toutes les 2 min",
+            "de": "Alle 2 Min.",
+            "es": "Cada 2 min"
+          }
+        },
+        {
+          "value": "5",
+          "label": {
+            "en": "Every 5 min",
+            "fr": "Toutes les 5 min",
+            "de": "Alle 5 Min.",
+            "es": "Cada 5 min"
+          }
+        },
+        {
+          "value": "10",
+          "label": {
+            "en": "Every 10 min",
+            "fr": "Toutes les 10 min",
+            "de": "Alle 10 Min.",
+            "es": "Cada 10 min"
+          }
+        }
+      ],
+      "default": "2",
+      "description": {
+        "en": "One request reads every room. Adax refuses too many requests (one every 30 s at most): 2 minutes is a good balance.",
+        "fr": "Une seule requête relève toutes les pièces. Adax refuse les requêtes trop rapprochées (une toutes les 30 s au plus) : 2 minutes est un bon compromis.",
+        "de": "Eine Anfrage liest alle Räume. Adax lehnt zu häufige Anfragen ab (höchstens eine alle 30 s): 2 Minuten sind ein guter Kompromiss.",
+        "es": "Una sola petición lee todas las estancias. Adax rechaza las peticiones demasiado seguidas (una cada 30 s como máximo): 2 minutos es un buen equilibrio."
+      }
+    },
+    {
+      "key": "language",
+      "type": "select",
+      "label": {
+        "en": "Language of the device texts",
+        "fr": "Langue des textes des appareils",
+        "de": "Sprache der Gerätetexte",
+        "es": "Idioma de los textos de los dispositivos"
+      },
+      "options": [
+        {
+          "value": "auto",
+          "label": {
+            "en": "Automatic",
+            "fr": "Automatique",
+            "de": "Automatisch",
+            "es": "Automático"
+          }
+        },
+        {
+          "value": "en",
+          "label": {
+            "en": "English",
+            "fr": "Anglais",
+            "de": "Englisch",
+            "es": "Inglés"
+          }
+        },
+        {
+          "value": "fr",
+          "label": {
+            "en": "French",
+            "fr": "Français",
+            "de": "Französisch",
+            "es": "Francés"
+          }
+        },
+        {
+          "value": "de",
+          "label": {
+            "en": "German",
+            "fr": "Allemand",
+            "de": "Deutsch",
+            "es": "Alemán"
+          }
+        },
+        {
+          "value": "es",
+          "label": {
+            "en": "Spanish",
+            "fr": "Espagnol",
+            "de": "Spanisch",
+            "es": "Español"
+          }
+        }
+      ],
+      "default": "auto",
+      "description": {
+        "en": "Names of the features and messages of the button below. Automatic: the language of the dashboard once a widget is shown.",
+        "fr": "Noms des fonctionnalités et messages du bouton ci-dessous. Automatique : la langue du tableau de bord dès qu’un widget est affiché.",
+        "de": "Namen der Funktionen und Meldungen der Schaltfläche unten. Automatisch: die Sprache des Dashboards, sobald ein Widget angezeigt wird.",
+        "es": "Nombres de las funciones y mensajes del botón de abajo. Automático: el idioma del panel en cuanto se muestra un widget."
+      }
+    }
+  ],
+  "actions": [
+    {
+      "key": "test_connection",
+      "timeout_seconds": 60,
+      "label": {
+        "en": "Test the connection",
+        "fr": "Tester la connexion",
+        "de": "Verbindung testen",
+        "es": "Probar la conexión"
+      },
+      "description": {
+        "en": "Reads the rooms of the account now and lists them, with their heaters and features.",
+        "fr": "Relève maintenant les pièces du compte et les liste, avec leurs radiateurs et fonctionnalités.",
+        "de": "Liest jetzt die Räume des Kontos und listet sie mit ihren Heizgeräten und Funktionen auf.",
+        "es": "Lee ahora las estancias de la cuenta y las lista, con sus radiadores y funciones."
+      }
+    }
+  ],
+  "widgets": [
+    {
+      "key": "rooms",
+      "icon": "thermometer",
+      "label": {
+        "en": "Adax rooms",
+        "fr": "Pièces Adax",
+        "de": "Adax-Räume",
+        "es": "Estancias Adax"
+      },
+      "description": {
+        "en": "Each room: temperature, setpoint, heating, power; all on and all off.",
+        "fr": "Chaque pièce : température, consigne, chauffage, puissance ; tout allumer, tout éteindre.",
+        "de": "Jeder Raum: Temperatur, Sollwert, Heizung, Leistung; alle an und alle aus.",
+        "es": "Cada estancia: temperatura, consigna, calefacción, potencia; encender y apagar todo."
+      },
+      "settings": [
+        {
+          "key": "devices",
+          "type": "multi_select",
+          "source": "devices",
+          "label": {
+            "en": "Rooms",
+            "fr": "Pièces",
+            "de": "Räume",
+            "es": "Estancias"
+          },
+          "description": {
+            "en": "Empty: every room.",
+            "fr": "Vide : toutes les pièces.",
+            "de": "Leer: alle Räume.",
+            "es": "Vacío: todas las estancias."
+          }
+        }
+      ],
+      "action_timeout_seconds": 90
+    },
+    {
+      "key": "energy",
+      "icon": "zap",
+      "label": {
+        "en": "Adax energy",
+        "fr": "Énergie Adax",
+        "de": "Adax-Energie",
+        "es": "Energía Adax"
+      },
+      "description": {
+        "en": "Energy of today and yesterday, power now, last 24 hours by hour.",
+        "fr": "Énergie d’aujourd’hui et d’hier, puissance actuelle, dernières 24 heures par heure.",
+        "de": "Energie von heute und gestern, aktuelle Leistung, letzte 24 Stunden stündlich.",
+        "es": "Energía de hoy y de ayer, potencia actual, últimas 24 horas por hora."
+      },
+      "settings": [
+        {
+          "key": "devices",
+          "type": "multi_select",
+          "source": "devices",
+          "label": {
+            "en": "Rooms",
+            "fr": "Pièces",
+            "de": "Räume",
+            "es": "Estancias"
+          },
+          "description": {
+            "en": "Empty: every room.",
+            "fr": "Vide : toutes les pièces.",
+            "de": "Leer: alle Räume.",
+            "es": "Vacío: todas las estancias."
+          }
+        }
+      ],
+      "action_timeout_seconds": 60
+    },
+    {
+      "key": "status",
+      "icon": "cloud",
+      "label": {
+        "en": "Adax",
+        "fr": "Adax",
+        "de": "Adax",
+        "es": "Adax"
+      },
+      "description": {
+        "en": "Connection to the Adax API, rooms heating, requests of the last hour.",
+        "fr": "Connexion à l’API Adax, pièces en chauffe, requêtes de la dernière heure.",
+        "de": "Verbindung zur Adax-API, beheizte Räume, Anfragen der letzten Stunde.",
+        "es": "Conexión a la API Adax, estancias con calefacción, peticiones de la última hora."
+      },
+      "action_timeout_seconds": 60
+    }
+  ],
+  "scene_triggers": [
+    {
+      "key": "heating_turned_on",
+      "label": {
+        "en": "The heating of a room is turned on",
+        "fr": "Le chauffage d’une pièce est allumé",
+        "de": "Die Heizung eines Raums wird eingeschaltet",
+        "es": "Se enciende la calefacción de una estancia"
+      },
+      "description": {
+        "en": "Turned on in the Adax WiFi app or on the heater (never by Gladys itself), seen at the next reading.",
+        "fr": "Allumé dans l’application Adax WiFi ou sur le radiateur (jamais par Gladys elle-même), vu au relevé suivant.",
+        "de": "In der Adax-WiFi-App oder am Heizgerät eingeschaltet (nie durch Gladys selbst), sichtbar bei der nächsten Abfrage.",
+        "es": "Encendida en la app Adax WiFi o en el radiador (nunca por la propia Gladys), vista en la siguiente lectura."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "Room",
+            "fr": "Pièce",
+            "de": "Raum",
+            "es": "Estancia"
+          },
+          "description": {
+            "en": "Empty: every room.",
+            "fr": "Vide : toutes les pièces.",
+            "de": "Leer: alle Räume.",
+            "es": "Vacío: todas las estancias."
+          }
+        }
+      ],
+      "variables": [
+        {
+          "key": "device",
+          "type": "string",
+          "label": {
+            "en": "Room (external id)",
+            "fr": "Pièce (identifiant externe)",
+            "de": "Raum (externe ID)",
+            "es": "Estancia (id externo)"
+          }
+        },
+        {
+          "key": "device_name",
+          "type": "string",
+          "label": {
+            "en": "Room name",
+            "fr": "Nom de la pièce",
+            "de": "Raumname",
+            "es": "Nombre de la estancia"
+          }
+        },
+        {
+          "key": "temperature",
+          "type": "number",
+          "label": {
+            "en": "Room temperature (°C)",
+            "fr": "Température ambiante (°C)",
+            "de": "Raumtemperatur (°C)",
+            "es": "Temperatura ambiente (°C)"
+          }
+        },
+        {
+          "key": "target_temperature",
+          "type": "number",
+          "label": {
+            "en": "Setpoint (°C)",
+            "fr": "Consigne (°C)",
+            "de": "Solltemperatur (°C)",
+            "es": "Consigna (°C)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "heating_turned_off",
+      "label": {
+        "en": "The heating of a room is turned off",
+        "fr": "Le chauffage d’une pièce est éteint",
+        "de": "Die Heizung eines Raums wird ausgeschaltet",
+        "es": "Se apaga la calefacción de una estancia"
+      },
+      "description": {
+        "en": "Turned off in the Adax WiFi app or on the heater (never by Gladys itself), seen at the next reading.",
+        "fr": "Éteint dans l’application Adax WiFi ou sur le radiateur (jamais par Gladys elle-même), vu au relevé suivant.",
+        "de": "In der Adax-WiFi-App oder am Heizgerät ausgeschaltet (nie durch Gladys selbst), sichtbar bei der nächsten Abfrage.",
+        "es": "Apagada en la app Adax WiFi o en el radiador (nunca por la propia Gladys), vista en la siguiente lectura."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "Room",
+            "fr": "Pièce",
+            "de": "Raum",
+            "es": "Estancia"
+          },
+          "description": {
+            "en": "Empty: every room.",
+            "fr": "Vide : toutes les pièces.",
+            "de": "Leer: alle Räume.",
+            "es": "Vacío: todas las estancias."
+          }
+        }
+      ],
+      "variables": [
+        {
+          "key": "device",
+          "type": "string",
+          "label": {
+            "en": "Room (external id)",
+            "fr": "Pièce (identifiant externe)",
+            "de": "Raum (externe ID)",
+            "es": "Estancia (id externo)"
+          }
+        },
+        {
+          "key": "device_name",
+          "type": "string",
+          "label": {
+            "en": "Room name",
+            "fr": "Nom de la pièce",
+            "de": "Raumname",
+            "es": "Nombre de la estancia"
+          }
+        },
+        {
+          "key": "temperature",
+          "type": "number",
+          "label": {
+            "en": "Room temperature (°C)",
+            "fr": "Température ambiante (°C)",
+            "de": "Raumtemperatur (°C)",
+            "es": "Temperatura ambiente (°C)"
+          }
+        },
+        {
+          "key": "target_temperature",
+          "type": "number",
+          "label": {
+            "en": "Setpoint (°C)",
+            "fr": "Consigne (°C)",
+            "de": "Solltemperatur (°C)",
+            "es": "Consigna (°C)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "setpoint_changed",
+      "label": {
+        "en": "The setpoint of a room changes",
+        "fr": "La consigne d’une pièce change",
+        "de": "Der Sollwert eines Raums ändert sich",
+        "es": "Cambia la consigna de una estancia"
+      },
+      "description": {
+        "en": "Changed in the Adax WiFi app, on the heater or by its weekly schedule — never by Gladys itself.",
+        "fr": "Changée dans l’application Adax WiFi, sur le radiateur ou par son programme hebdomadaire — jamais par Gladys elle-même.",
+        "de": "In der Adax-WiFi-App, am Heizgerät oder durch den Wochenplan geändert — nie durch Gladys selbst.",
+        "es": "Cambiada en la app Adax WiFi, en el radiador o por su programa semanal — nunca por la propia Gladys."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "Room",
+            "fr": "Pièce",
+            "de": "Raum",
+            "es": "Estancia"
+          },
+          "description": {
+            "en": "Empty: every room.",
+            "fr": "Vide : toutes les pièces.",
+            "de": "Leer: alle Räume.",
+            "es": "Vacío: todas las estancias."
+          }
+        }
+      ],
+      "variables": [
+        {
+          "key": "device",
+          "type": "string",
+          "label": {
+            "en": "Room (external id)",
+            "fr": "Pièce (identifiant externe)",
+            "de": "Raum (externe ID)",
+            "es": "Estancia (id externo)"
+          }
+        },
+        {
+          "key": "device_name",
+          "type": "string",
+          "label": {
+            "en": "Room name",
+            "fr": "Nom de la pièce",
+            "de": "Raumname",
+            "es": "Nombre de la estancia"
+          }
+        },
+        {
+          "key": "temperature",
+          "type": "number",
+          "label": {
+            "en": "Room temperature (°C)",
+            "fr": "Température ambiante (°C)",
+            "de": "Raumtemperatur (°C)",
+            "es": "Temperatura ambiente (°C)"
+          }
+        },
+        {
+          "key": "target_temperature",
+          "type": "number",
+          "label": {
+            "en": "Setpoint (°C)",
+            "fr": "Consigne (°C)",
+            "de": "Solltemperatur (°C)",
+            "es": "Consigna (°C)"
+          }
+        },
+        {
+          "key": "previous_target",
+          "type": "number",
+          "label": {
+            "en": "Previous setpoint (°C)",
+            "fr": "Consigne précédente (°C)",
+            "de": "Vorheriger Sollwert (°C)",
+            "es": "Consigna anterior (°C)"
+          }
+        }
+      ]
+    }
+  ],
+  "scene_actions": [
+    {
+      "key": "set_temperature",
+      "timeout_seconds": 90,
+      "label": {
+        "en": "Set the setpoint of the rooms",
+        "fr": "Régler la consigne des pièces",
+        "de": "Sollwert der Räume einstellen",
+        "es": "Ajustar la consigna de las estancias"
+      },
+      "description": {
+        "en": "One room or every room, 5 to 35 °C by whole degrees; turns the heating on.",
+        "fr": "Une pièce ou toutes, de 5 à 35 °C par degré entier ; allume le chauffage.",
+        "de": "Ein Raum oder alle, 5 bis 35 °C in ganzen Grad; schaltet die Heizung ein.",
+        "es": "Una estancia o todas, de 5 a 35 °C por grados enteros; enciende la calefacción."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "Room",
+            "fr": "Pièce",
+            "de": "Raum",
+            "es": "Estancia"
+          },
+          "description": {
+            "en": "Empty: every room.",
+            "fr": "Vide : toutes les pièces.",
+            "de": "Leer: alle Räume.",
+            "es": "Vacío: todas las estancias."
+          }
+        },
+        {
+          "key": "temperature",
+          "type": "number",
+          "required": true,
+          "min": 5,
+          "max": 35,
+          "label": {
+            "en": "Temperature (°C)",
+            "fr": "Température (°C)",
+            "de": "Temperatur (°C)",
+            "es": "Temperatura (°C)"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "key": "count",
+          "type": "number",
+          "label": {
+            "en": "Rooms changed",
+            "fr": "Pièces changées",
+            "de": "Geänderte Räume",
+            "es": "Estancias cambiadas"
+          }
+        },
+        {
+          "key": "failed",
+          "type": "number",
+          "label": {
+            "en": "Rooms refused",
+            "fr": "Pièces refusées",
+            "de": "Abgelehnte Räume",
+            "es": "Estancias rechazadas"
+          }
+        },
+        {
+          "key": "temperature",
+          "type": "number",
+          "label": {
+            "en": "Setpoint written (°C)",
+            "fr": "Consigne écrite (°C)",
+            "de": "Geschriebener Sollwert (°C)",
+            "es": "Consigna escrita (°C)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "set_heating",
+      "timeout_seconds": 90,
+      "label": {
+        "en": "Turn the heating on or off",
+        "fr": "Allumer ou éteindre le chauffage",
+        "de": "Heizung ein- oder ausschalten",
+        "es": "Encender o apagar la calefacción"
+      },
+      "description": {
+        "en": "One room or every room; on keeps the setpoint of each room.",
+        "fr": "Une pièce ou toutes ; l’allumage garde la consigne de chaque pièce.",
+        "de": "Ein Raum oder alle; beim Einschalten bleibt der Sollwert jedes Raums.",
+        "es": "Una estancia o todas; al encender se mantiene la consigna de cada estancia."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "Room",
+            "fr": "Pièce",
+            "de": "Raum",
+            "es": "Estancia"
+          },
+          "description": {
+            "en": "Empty: every room.",
+            "fr": "Vide : toutes les pièces.",
+            "de": "Leer: alle Räume.",
+            "es": "Vacío: todas las estancias."
+          }
+        },
+        {
+          "key": "state",
+          "type": "select",
+          "required": true,
+          "label": {
+            "en": "Heating",
+            "fr": "Chauffage",
+            "de": "Heizung",
+            "es": "Calefacción"
+          },
+          "options": [
+            {
+              "value": "on",
+              "label": {
+                "en": "On",
+                "fr": "Allumé",
+                "de": "An",
+                "es": "Encendida"
+              }
+            },
+            {
+              "value": "off",
+              "label": {
+                "en": "Off",
+                "fr": "Éteint",
+                "de": "Aus",
+                "es": "Apagada"
+              }
+            }
+          ],
+          "default": "off"
+        }
+      ],
+      "outputs": [
+        {
+          "key": "count",
+          "type": "number",
+          "label": {
+            "en": "Rooms changed",
+            "fr": "Pièces changées",
+            "de": "Geänderte Räume",
+            "es": "Estancias cambiadas"
+          }
+        },
+        {
+          "key": "failed",
+          "type": "number",
+          "label": {
+            "en": "Rooms refused",
+            "fr": "Pièces refusées",
+            "de": "Abgelehnte Räume",
+            "es": "Estancias rechazadas"
+          }
+        }
+      ]
+    },
+    {
+      "key": "refresh",
+      "timeout_seconds": 60,
+      "label": {
+        "en": "Read the Adax rooms now",
+        "fr": "Relever les pièces Adax maintenant",
+        "de": "Adax-Räume jetzt abfragen",
+        "es": "Leer las estancias Adax ahora"
+      },
+      "description": {
+        "en": "Reads every room now instead of waiting for the next reading (once per 30 seconds at most).",
+        "fr": "Relève toutes les pièces maintenant au lieu d’attendre le prochain relevé (une fois par 30 secondes au plus).",
+        "de": "Fragt alle Räume jetzt ab, statt auf die nächste Abfrage zu warten (höchstens alle 30 Sekunden).",
+        "es": "Lee todas las estancias ahora en lugar de esperar a la próxima lectura (una vez cada 30 segundos como máximo)."
+      },
+      "outputs": [
+        {
+          "key": "rooms",
+          "type": "number",
+          "label": {
+            "en": "Rooms",
+            "fr": "Pièces",
+            "de": "Räume",
+            "es": "Estancias"
+          }
+        },
+        {
+          "key": "heating",
+          "type": "number",
+          "label": {
+            "en": "Rooms with the heating on",
+            "fr": "Pièces chauffage allumé",
+            "de": "Räume mit Heizung an",
+            "es": "Estancias con calefacción"
+          }
+        },
+        {
+          "key": "energy_today",
+          "type": "number",
+          "label": {
+            "en": "Energy today (kWh)",
+            "fr": "Énergie aujourd’hui (kWh)",
+            "de": "Energie heute (kWh)",
+            "es": "Energía hoy (kWh)"
+          }
+        }
+      ]
+    }
+  ]
+}
